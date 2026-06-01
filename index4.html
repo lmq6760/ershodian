@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发布商品</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<div class="container nav-box">
+<div class="logo">校园二手集市</div>
+<div class="nav-menu">
+<a href="index1.html">首页</a>
+<a href="index2.html">分类</a>
+<a href="index4.html">发布</a>
+<a href="index5.html">我的</a>
+</div>
+</div>
+</header>
+<div class="container">
+<div class="publish-form">
+<form id="publishForm">
+  <div class="form-item">
+    <label>商品名称</label>
+    <input type="text" id="goods-name" required placeholder="请输入商品名称">
+  </div>
+  <div class="form-item">
+    <label>商品分类</label>
+    <select id="goods-cate" required>
+      <option value="">请选择分类</option>
+      <option value="教材书籍">教材书籍</option>
+      <option value="数码电子">数码电子</option>
+      <option value="生活用品">生活用品</option>
+    </select>
+  </div>
+  <div class="form-item">
+    <label>新旧成色</label>
+    <select id="goods-level" required>
+      <option value="">请选择成色</option>
+      <option value="全新">全新</option>
+      <option value="95新">95新</option>
+      <option value="9成新">9成新</option>
+      <option value="8成新">8成新</option>
+    </select>
+  </div>
+  <div class="form-item">
+    <label>商品价格</label>
+    <input type="number" id="goods-price" required min="1" placeholder="请输入价格">
+  </div>
+  <div class="form-item">
+    <label>商品描述</label>
+    <textarea id="goods-desc" required rows="4" placeholder="简单描述商品情况"></textarea>
+  </div>
+  <div class="form-item">
+    <label>交易联系方式</label>
+    <input type="text" id="trade-contact" required placeholder="请输入您的联系方式（必填）">
+  </div>
+  <div class="form-item">
+    <label>上传商品图片（至少1张）</label>
+    <input type="file" id="goods-img" accept="image/*" multiple onchange="previewImg()">
+    <div id="img-preview"></div>
+  </div>
+  <button type="submit" class="submit-btn">发布商品</button>
+</form>
+</div>
+</div>
+
+<script>
+function previewImg() {
+  const input = document.getElementById('goods-img');
+  const preview = document.getElementById('img-preview');
+  preview.innerHTML = '';
+  
+  const files = input.files;
+  for (let i = 0; i < files.length && i < 3; i++) {
+    const file = files[i];
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.objectFit = 'cover';
+      img.style.margin = '5px';
+      preview.appendChild(img);
+    };
+    
+    reader.readAsDataURL(file);
+  }
+}
+
+function submitPublish() {
+  // 检查是否上传了图片
+  const previewImgs = document.querySelectorAll("#img-preview img");
+  if (previewImgs.length === 0) {
+    alert("请至少上传一张商品图片！");
+    return; // 阻止发布
+  }
+  
+  const name = document.getElementById("goods-name").value;
+  const cate = document.getElementById("goods-cate").value;
+  const level = document.getElementById("goods-level").value;
+  const price = document.getElementById("goods-price").value;
+  const desc = document.getElementById("goods-desc").value;
+  const tradeContact = document.getElementById("trade-contact").value;
+  
+  const user = JSON.parse(localStorage.getItem("userInfo")) || {
+    nickname: "匿名用户",
+    contact: "未设置联系方式"
+  };
+  
+  const img1 = previewImgs.length > 0 ? previewImgs[0].src : "";
+  const img2 = previewImgs.length > 1 ? previewImgs[1].src : "";
+  const img3 = previewImgs.length > 2 ? previewImgs[2].src : "";
+  
+  const goods = {
+    id: Date.now(),
+    name: name,
+    cate: cate,
+    level: level,
+    price: price,
+    desc: desc,
+    img: img1,
+    img2: img2,
+    img3: img3,
+    createTime: new Date().toLocaleString(),
+    seller: {
+      nickname: user.nickname,
+      contact: tradeContact
+    }
+  };
+  
+  let goodsData = JSON.parse(localStorage.getItem("campusGoods")) || [];
+  goodsData.push(goods);
+  localStorage.setItem("campusGoods", JSON.stringify(goodsData));
+  
+  alert("发布成功！");
+  location.href = "index1.html";
+}
+
+document.getElementById("publishForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  submitPublish();
+});
+</script>
+<script src="js.js"></script>
+</body>
+</html>

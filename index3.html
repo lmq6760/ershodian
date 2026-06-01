@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .back-btn {
+            background-color: #4080ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .back-btn:hover {
+            background-color: #2967d8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-box">
+            <div class="logo">校园二手集市</div>
+            <div class="nav-menu">
+                <a href="index1.html">首页</a>
+                <a href="index2.html">分类</a>
+                <a href="index4.html">发布</a>
+                <a href="index5.html">我的</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="detail-box">
+            <!-- 返回首页 按钮（和收藏页样式一样） -->
+            <button class="back-btn" onclick="location.href='index1.html'">← 返回首页</button>
+
+            <div class="detail-img-box">
+                <img id="detail-img1">
+                <img id="detail-img2">
+                <img id="detail-img3">
+            </div>
+
+            <h2 id="detail-title"></h2>
+            <div class="detail-price" id="detail-price"></div>
+            <p>分类：<span id="detail-cate"></span></p>
+            <p>成色：<span id="detail-level"></span></p>
+            <p>描述：<span id="detail-desc"></span></p>
+
+            <div class="seller-info" id="seller-info">
+                <p>卖家：在校学生（已认证）</p>
+                <p>交易方式：线下当面交易</p>
+            </div>
+
+            <div class="action-btn-box">
+                <button class="action-btn collect-btn" id="collect-btn" onclick="toggleCollect()">收藏商品</button>
+                <button class="action-btn bargain-btn" onclick="startBargain()">价格协商</button>
+                <button class="action-btn" style="background-color: #FF4444; color: white;" onclick="buyNow()">立即购买</button>
+            </div>
+
+            <div class="notice-box">
+                <h4>交易须知</h4>
+                <p>1. 仅限本校学生线下当面交易，谨防诈骗</p>
+                <p>2. 交易前请核验商品成色，一经当面确认不予退换</p>
+                <p>3. 禁止交易违禁品，违规账号将封禁</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js.js"></script>
+</body>
+</html>

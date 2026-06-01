@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .back-btn {
+            background-color: #4080ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .back-btn:hover {
+            background-color: #2967d8;
+        }
+        .chat-header-info {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .chat-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .price-info {
+            font-size: 14px;
+        }
+        .price-original {
+            color: #999;
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+        .price-offer {
+            color: #ff4444;
+            font-weight: bold;
+        }
+        .chat-content {
+            height: 400px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 15px;
+            overflow-y: auto;
+            background: #fafafa;
+            margin-bottom: 12px;
+        }
+        .msg {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        .msg-right {
+            justify-content: flex-end;
+        }
+        .bubble {
+            max-width: 70%;
+            padding: 8px 12px;
+            border-radius: 10px;
+        }
+        .msg-left .bubble {
+            background: #fff;
+            border: 1px solid #ddd;
+        }
+        .msg-right .bubble {
+            background: #4080ff;
+            color: #fff;
+        }
+        .input-box {
+            display: flex;
+            gap: 8px;
+        }
+        .input-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .input-box button {
+            background: #4080ff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-box">
+            <div class="logo">校园二手集市</div>
+            <div class="nav-menu">
+                <a href="index1.html">首页</a>
+                <a href="index2.html">分类</a>
+                <a href="index4.html">发布</a>
+                <a href="index5.html">我的</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="order-box">
+            <!-- 返回时带上 bid，让列表页知道要高亮哪条 -->
+            <button class="back-btn" onclick="location.href='index11.html?highlightBid='+bid">← 返回</button>
+
+            <div class="chat-header-info">
+                <div class="chat-title" id="chat-title"></div>
+                <div class="price-info">
+                    <span class="price-original">原价: ¥0</span>
+                    <span class="price-offer">议价: ¥0</span>
+                </div>
+            </div>
+
+            <div class="chat-content" id="content"></div>
+
+            <div class="input-box">
+                <input id="msg" placeholder="输入消息...">
+                <button onclick="send()">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getParam(name) {
+            let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            let r = window.location.search.substr(1).match(reg);
+            return r ? r[2] : null;
+        }
+
+        let bid = getParam("bid");
+        let bargains = JSON.parse(localStorage.getItem("bargains")) || [];
+        let bargain = bargains.find(x => x.id == bid);
+
+        window.onload = function () {
+            if (!bargain) {
+                location.href = "index11.html";
+                return;
+            }
+            if (!bargain.chat || bargain.chat.length === 0) {
+                bargain.chat = [{ sender: "系统", content: "协商对话已开启" }];
+                localStorage.setItem("bargains", JSON.stringify(bargains));
+            }
+            document.getElementById("chat-title").innerText = bargain.goods.name;
+            document.querySelector(".price-original").innerText = "原价: ¥" + bargain.goods.price;
+            document.querySelector(".price-offer").innerText = "议价: ¥" + bargain.offerPrice;
+            showMsg();
+        };
+
+        function showMsg() {
+            let c = document.getElementById("content");
+            let html = "";
+            bargain.chat.forEach(m => {
+                if (m.sender === "系统") {
+                    html += `<div style='text-align:center;color:#999;margin:10px'>${m.content}</div>`;
+                } else if (m.sender === "我") {
+                    html += `<div class='msg msg-right'><div class='bubble'>${m.content}</div></div>`;
+                } else {
+                    html += `<div class='msg'><div class='bubble'>${m.content}</div></div>`;
+                }
+            });
+            c.innerHTML = html;
+            c.scrollTop = c.scrollHeight;
+        }
+
+        function send() {
+            let val = document.getElementById("msg").value.trim();
+            if (!val) return;
+            bargain.chat.push({ sender: "我", content: val });
+            let idx = bargains.findIndex(x => x.id == bid);
+            bargains[idx] = bargain;
+            localStorage.setItem("bargains", JSON.stringify(bargains));
+            document.getElementById("msg").value = "";
+            showMsg();
+        }
+    </script>
+</body>
+</html>
