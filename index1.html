@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首页</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<div class="container nav-box">
+<div class="logo">校园二手集市</div>
+<div class="nav-menu">
+<a href="index1.html">首页</a>
+<a href="index2.html">分类</a>
+<a href="index4.html">发布</a>
+<a id="userNav" href="">我的</a>
+</div>
+</div>
+</header>
+
+<!-- 下面用 main 包起来，符合 HTML5 语义化 -->
+<main class="container">
+<div class="banner"></div>
+
+<div class="category-nav" id="navTab">
+<div class="cate-item active" onclick="filterHome('')">全部</div>
+<div class="cate-item" onclick="filterHome('教材书籍')">教材书籍</div>
+<div class="cate-item" onclick="filterHome('数码电子')">数码电子</div>
+<div class="cate-item" onclick="filterHome('生活用品')">生活用品</div>
+</div>
+
+<h3>热门商品</h3>
+<div class="goods-list" id="home-goods"></div>
+
+<!-- 新增：新人福利区 -->
+<div class="welfare-box">
+  <h3>新人福利区</h3>
+  <div class="welfare-card">
+    <p>✅ 本校学生专属 | 线下当面交易更安全</p>
+    <p>✅ 首次发布商品，优先推荐展示</p>
+    <p>✅ 免费上架闲置，无手续费</p>
+  </div>
+</div>
+</main>
+
+<script src="js.js"></script>
+</body>
+</html>

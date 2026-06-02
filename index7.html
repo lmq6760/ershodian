@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的发布</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .back-btn {
+            background-color: #4080ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .back-btn:hover {
+            background-color: #2967d8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-box">
+            <div class="logo">校园二手集市</div>
+            <div class="nav-menu">
+                <a href="index1.html">首页</a>
+                <a href="index2.html">分类</a>
+                <a href="index4.html">发布</a>
+                <a href="index5.html">我的</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 只改这一行：div → main -->
+    <main class="container">
+        <div class="order-box">
+            <button class="back-btn" onclick="location.href='index5.html'">← 返回</button>
+            <h2>我的发布</h2>
+            <div id="user-goods" class="goods-list"></div>
+        </div>
+    </main>
+
+    <script src="js.js"></script>
+    <script>
+        window.onload = function(){
+            showMyPublish();
+        }
+    </script>
+</body>
+</html>

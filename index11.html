@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的消息</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .back-btn {
+            background-color: #4080ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .back-btn:hover {
+            background-color: #2967d8;
+        }
+        #chat-list {
+            margin-top: 15px;
+        }
+        .chat-item {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            background: #fff;
+            transition: 0.2s;
+        }
+        .chat-item:hover {
+            background: #fafafa;
+        }
+        .chat-item.active {
+            background: #eaf2ff;
+            border-left: 4px solid #4080ff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .chat-name {
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 16px;
+        }
+        .chat-price {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .price-original {
+            color: #999;
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+        .price-offer {
+            color: #ff4444;
+            font-weight: bold;
+        }
+        .chat-desc {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-box">
+            <div class="logo">校园二手集市</div>
+            <div class="nav-menu">
+                <a href="index1.html">首页</a>
+                <a href="index2.html">分类</a>
+                <a href="index4.html">发布</a>
+                <a href="index5.html">我的</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 只改这一行：div → main -->
+    <main class="container">
+        <div class="order-box">
+            <button class="back-btn" onclick="location.href='index5.html'">← 返回</button>
+            <h2>我的消息</h2>
+            <div id="chat-list"></div>
+        </div>
+    </main>
+
+    <script>
+        let bargains = JSON.parse(localStorage.getItem("bargains")) || [];
+        let highlightBid = new URLSearchParams(location.search).get("highlightBid");
+
+        function renderChat() {
+            let box = document.getElementById("chat-list");
+            if (bargains.length === 0) {
+                box.innerHTML = "<div style='text-align:center;padding:40px;color:#999'>暂无消息</div>";
+                return;
+            }
+
+            let html = "";
+            bargains.forEach(item => {
+                let last = item.chat?.length
+                    ? item.chat[item.chat.length - 1].content
+                    : "暂无消息";
+                let activeClass = (highlightBid && item.id == highlightBid) ? "active" : "";
+
+                html += `
+                <div class="chat-item ${activeClass}" data-id="${item.id}" onclick="goChat(${item.id})">
+                    <div class="chat-name">${item.goods.name}</div>
+                    <div class="chat-price">
+                        <span class="price-original">原价: ¥${item.goods.price}</span>
+                        <span class="price-offer">议价: ¥${item.offerPrice}</span>
+                    </div>
+                    <div class="chat-desc">${last}</div>
+                </div>
+                `;
+            });
+            box.innerHTML = html;
+        }
+
+        function goChat(id) {
+            location.href = "index12.html?bid=" + id;
+        }
+
+        window.onload = function () {
+            renderChat();
+        };
+    </script>
+</body>
+</html>

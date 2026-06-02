@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的协商</title>
+<link rel="stylesheet" href="style.css">
+<style>
+    /* 统一返回按钮样式 */
+    .back-btn {
+        background-color: #2D7DFF;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+    .back-btn:hover {
+        background-color: #2967d8;
+    }
+</style>
+</head>
+<body>
+<header>
+<div class="container nav-box">
+<div class="logo">校园二手集市</div>
+<div class="nav-menu">
+<a href="index1.html">首页</a>
+<a href="index2.html">分类</a>
+<a href="index4.html">发布</a>
+<a href="index5.html">我的</a>
+</div>
+</div>
+</header>
+
+<!-- 只改这一行：div → main -->
+<main class="container">
+<div class="publish-form">
+  <button class="back-btn" onclick="location.href='index5.html'">← 返回</button>
+  <h2>我的价格协商</h2>
+  <div id="bargain-list"></div>
+</div>
+</main>
+
+<script>
+function renderBargains() {
+  const bargains = JSON.parse(localStorage.getItem("bargains")) || [];
+  const bargainList = document.getElementById("bargain-list");
+  
+  if (bargains.length === 0) {
+    bargainList.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;height:120px;color:#999;">暂无协商记录</div>`;
+    return;
+  }
+  
+  let html = "";
+  bargains.forEach(bargain => {
+    const seller = bargain.goods.seller || {nickname: "未知卖家", contact: "无联系方式"};
+    const buyer = bargain.buyer || {nickname: "未知买家", contact: "无联系方式"};
+    
+    html += `
+    <div style="display:flex;align-items:center;gap:15px;margin:15px 0;padding:15px;border:1px solid #eee;border-radius:8px;">
+      <img src="${bargain.goods.img}" style="width:80px;height:80px;object-fit:cover;border-radius:6px;">
+      <div style="flex:1;">
+        <h4>${bargain.goods.name}</h4>
+        <p>原价：¥${bargain.goods.price}</p>
+        <p>协商价：¥${bargain.offerPrice}</p>
+        <p>卖家：${seller.nickname} (${seller.contact})</p>
+        <p>买家：${buyer.nickname} (${buyer.contact})</p>
+        <p>状态：<span style="color:${bargain.status === '协商中' ? '#ff4444' : '#2D7DFF'}">${bargain.status}</span></p>
+        <p>发起时间：${bargain.createTime}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <button onclick="location.href='index11.html'" style="background:#2D7DFF;color:white;border:none;padding:5px;border-radius:4px;cursor:pointer;">去聊天</button>
+        ${bargain.status === '协商中' ? `
+        <button onclick="acceptBargain(${bargain.id})">接受</button>
+        <button onclick="rejectBargain(${bargain.id})">拒绝</button>
+        ` : ''}
+        <button onclick="deleteBargain(${bargain.id})">删除</button>
+      </div>
+    </div>
+    `;
+  });
+  
+  bargainList.innerHTML = html;
+}
+
+function acceptBargain(bargainId) {
+  let bargains = JSON.parse(localStorage.getItem("bargains")) || [];
+  const index = bargains.findIndex(b => b.id === bargainId);
+  
+  if (index > -1) {
+    bargains[index].status = "已接受";
+    localStorage.setItem("bargains", JSON.stringify(bargains));
+    
+    const bargain = bargains[index];
+    const order = {
+      id: Date.now(),
+      goods: {
+        ...bargain.goods,
+        price: bargain.offerPrice
+      },
+      status: "待支付",
+      createTime: new Date().toLocaleString(),
+      buyer: bargain.buyer
+    };
+    
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+    orders.push(order);
+    localStorage.setItem("orders", JSON.stringify(orders));
+    
+    alert("协商成功！已生成订单");
+    window.location.href = "index6.html";
+    renderBargains();
+  }
+}
+
+function rejectBargain(bargainId) {
+  let bargains = JSON.parse(localStorage.getItem("bargains")) || [];
+  const index = bargains.findIndex(b => b.id === bargainId);
+  
+  if (index > -1) {
+    bargains[index].status = "已拒绝";
+    localStorage.setItem("bargains", JSON.stringify(bargains));
+    alert("协商已拒绝");
+    renderBargains();
+  }
+}
+
+function deleteBargain(bargainId) {
+  if (confirm('确定要删除这个协商记录吗？')) {
+    let bargains = JSON.parse(localStorage.getItem("bargains")) || [];
+    bargains = bargains.filter(b => b.id !== bargainId);
+    localStorage.setItem("bargains", JSON.stringify(bargains));
+    renderBargains();
+  }
+}
+
+window.onload = renderBargains;
+</script>
+</body>
+</html>
