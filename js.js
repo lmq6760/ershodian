@@ -1,3 +1,16 @@
+// ======================
+// 公共登录验证（我只加了这个）
+// ======================
+function checkLogin() {
+  let user = localStorage.getItem('currentUser');
+  if (!user) {
+    alert('请先登录再进行操作！');
+    location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
 let goodsData = JSON.parse(localStorage.getItem("campusGoods")) || [];
 let collectData = JSON.parse(localStorage.getItem("collectList")) || [];
 let orders = JSON.parse(localStorage.getItem("orders")) || [];
@@ -211,6 +224,8 @@ function compressImage(file, maxWidth = 800, quality = 0.7) {
 
 // 发布商品
 async function submitPublish() {
+  if (!checkLogin()) return;
+
   const name = document.getElementById("goods-name").value;
   const cate = document.getElementById("goods-cate").value;
   const level = document.getElementById("goods-level").value;
@@ -305,6 +320,8 @@ function filterGoods() {
 
 // 收藏
 function toggleCollect() {
+  if (!checkLogin()) return;
+
   const id = Number(localStorage.getItem("currentGoodsId"));
   const idx = collectData.findIndex(i => i.id === id);
   if (idx > -1) {
@@ -356,6 +373,8 @@ function showMyCollect() {
 
 // 价格协商
 function startBargain() {
+  if (!checkLogin()) return;
+
   const id = Number(localStorage.getItem("currentGoodsId"));
   const goods = goodsData.find(item => item.id === id);
   const user = JSON.parse(localStorage.getItem("userInfo")) || {
@@ -396,6 +415,8 @@ function startBargain() {
 
 // 立即购买
 function buyNow() {
+  if (!checkLogin()) return;
+
   const id = Number(localStorage.getItem("currentGoodsId"));
   const goods = goodsData.find(item => item.id === id);
   const user = JSON.parse(localStorage.getItem("userInfo")) || {
@@ -636,7 +657,6 @@ window.onload = function () {
 };
 
 // ==============================================
-// 我只加了下面这一段！其他完全没动！
 // 导航：未登录显示【登录】，登录后显示【我的】
 // ==============================================
 window.addEventListener('load', function(){
